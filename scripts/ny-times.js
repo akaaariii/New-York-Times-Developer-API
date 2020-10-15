@@ -4,8 +4,10 @@ $(function(){
         type: 'GET',
         dataType: 'json',
         success: function(res){
+            const list_name = res.results.list_name;
+            const published_date = res.results.published_date;
             let bookData = sanitizeData(res);
-            displayData(bookData);
+            displayData(list_name, published_date, bookData);
         },
         error: function(xhr){
             console.log(`${xhr.status} : ${xhr.error}`);
@@ -13,7 +15,13 @@ $(function(){
     })
 })
 
-function displayData(results){
+function displayData(name, date, results){
+    // header
+    const headerDiv = document.querySelector('.header');
+    const header = document.createElement('h1');
+    header.textContent = `The best Seller ${name} Books Published in ${date}`;
+    headerDiv.appendChild(header);
+
     results.forEach((data) => {
         const listDiv = document.querySelector('.list');
         const itemDiv = document.createElement('div');
@@ -52,14 +60,6 @@ function displayData(results){
 }
 
 function sanitizeData(response){
-    // header
-    const headerDiv = document.querySelector('.header');
-    const header = document.createElement('h1');
-    const list_name = response.results.list_name;
-    const published_date = response.results.published_date;
-    header.textContent = `The best Seller ${list_name} Books Published in ${published_date}`;
-    headerDiv.appendChild(header);
-
     // book list
     let data = [];
     response.results.books.forEach((d) => {
