@@ -1,0 +1,43 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Cormorant Garamond', serif;
+}
+img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+h1 {
+    text-align: center;
+    font-size: 1.8em;
+}
+h2 {
+    margin-top: 0;
+}
+h3 {
+    margin-bottom: 0;
+}
+h4 {
+    margin-top: 5px;
+}
+.list {
+    display: grid;
+    grid-template-columns: repeat(5, 20%);
+}
+.book-item {
+    border: 2px solid #bdbcbc;
+    padding: 20px;
+}
+.book-item p {
+    text-align: justify;
+}
+.btn {
+    text-decoration: none;
+    border: 1px solid #ed9220;
+    background-color: #ed9220;
+    color: white;
+    border-radius: 3px;
+    padding: 0 10px;
+    font-size: 1em;
+}

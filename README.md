@@ -1,1 +1,1 @@
-# New-York-Times-Developer-API
+# New York Times Developer API
