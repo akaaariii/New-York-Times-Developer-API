@@ -1,61 +1,57 @@
-$(function(){
-    $.ajax({
-        url: `https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json?api-key=${config.API_KEY}`,
-        type: 'GET',
-        dataType: 'json',
-        success: function(res){
-            const list_name = res.results.list_name;
-            const published_date = res.results.published_date;
-            let bookData = sanitizeData(res);
-            displayData(list_name, published_date, bookData);
-        },
-        error: function(xhr){
-            console.log(`${xhr.status} : ${xhr.error}`);
-        }
-    })
-})
+let list_name, published_date;
+let favouriteBooks = localStorage.getItem('favourite') ? JSON.parse(localStorage.getItem('favourite')) : [];
+
+const getBooks = async() => {
+    try {
+        let res = await $.ajax({
+            url: `https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json?api-key=${config.API_KEY}`,
+            type: 'GET',
+            dataType: 'json'   
+        })
+        list_name = res.results.list_name;
+        published_date = res.results.published_date;
+        return sanitizeData(res);
+    } catch (xhr){
+        console.log(`${xhr.status} : ${xhr.error}`);
+    }
+}
+
+function checkFavourite(item){
+    const index = favouriteBooks.findIndex(e => e.id === item.id);
+    return (index < 0) ? false : true;
+}
 
 function displayData(name, date, results){
     // header
-    const headerDiv = document.querySelector('.header');
-    const header = document.createElement('h1');
-    header.textContent = `The best Seller ${name} Books Published in ${date}`;
-    headerDiv.appendChild(header);
+    const headerDiv = $('.header');
+    const header = $('<h1>').text(`The best Seller ${name} Books Published in ${date}`);
+    headerDiv.append(header);
 
     results.forEach((data) => {
-        const listDiv = document.querySelector('.list');
-        const itemDiv = document.createElement('div');
-        itemDiv.classList.add('book-item');
-        itemDiv.setAttribute('id', data.id);
+        const listDiv = $('.list');
+        const itemDiv = $('<div class="book-item"></div>');
         
-        const rank = document.createElement('h2');
-        rank.textContent = data.rank;
-        itemDiv.appendChild(rank);
+        const rank = $('<h2>').text(data.rank);
+        itemDiv.append(rank);
+        const img = $('<img>').attr('src', data.image);
+        itemDiv.append(img);
 
-        const img = document.createElement('img');
-        img.setAttribute('src', data.image);
-        itemDiv.appendChild(img);
-
-        const title = document.createElement('h3');
-        title.textContent = data.title;
-        itemDiv.appendChild(title);
+        const titleDiv = $('<div class="title-item"></div>').attr('id', data.id);
+        const isFavourite = checkFavourite(data);
+        const icon = isFavourite ? $('<i class="fas fa-heart favourite"></i>') : $('<i class="fas fa-heart"></i>'); 
+        const title = $('<h3></h3>').text(data.title);
+        titleDiv.append(icon);
+        titleDiv.append(title);
+        itemDiv.append(titleDiv);
         
-        const author = document.createElement('h4');
-        author.textContent = data.author;
-        itemDiv.appendChild(author);
-
-        const desc = document.createElement('p');
-        desc.textContent = data.description;
-        itemDiv.appendChild(desc);
-
-        const buyBtn = document.createElement('a');
-        buyBtn.classList.add('btn');
-        buyBtn.setAttribute('href', data.buyBtn);
-        buyBtn.setAttribute('target', '_blank')
-        buyBtn.textContent = 'BUY';
+        const author = $('<h4></h4>').text(data.author);
+        itemDiv.append(author);
+        const desc = $('<p></p>').text(data.description);
+        itemDiv.append(desc);
+        const buyBtn = $('<a class="btn"></a>').attr('href', data.buyBtn).attr('target', '_blank').text('BUY');
         itemDiv.append(buyBtn);
 
-        listDiv.appendChild(itemDiv);
+        listDiv.append(itemDiv);
     })
 }
 
@@ -75,3 +71,24 @@ function sanitizeData(response){
     })
     return data;
 }
+
+let bookData = [];
+getBooks().then(book => {
+    displayData(list_name, published_date, book);
+    bookData = book;
+}).then(() => {
+    $('.fa-heart').click((e) => {
+        let target = $(e.target);
+        let isFav = target.hasClass('favourite');
+        let targetId = target.parent().attr('id');
+        const favBook = bookData.find(e => e.id === targetId);
+        const favIndex = bookData.findIndex(e => e.id === targetId)
+        if(!isFav){
+            favouriteBooks.push(favBook);
+        } else {
+            favouriteBooks.splice(favIndex, 1);
+        }
+        localStorage.setItem('favourite', JSON.stringify(favouriteBooks));
+        target.toggleClass('favourite');
+    })
+})
