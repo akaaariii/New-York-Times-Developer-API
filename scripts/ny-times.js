@@ -82,7 +82,7 @@ getBooks().then(book => {
         let isFav = target.hasClass('favourite');
         let targetId = target.parent().attr('id');
         const favBook = bookData.find(e => e.id === targetId);
-        const favIndex = bookData.findIndex(e => e.id === targetId)
+        const favIndex = favouriteBooks.findIndex(e => e.id === targetId)
         if(!isFav){
             favouriteBooks.push(favBook);
         } else {
