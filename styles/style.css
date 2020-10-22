@@ -1,14 +1,24 @@
+body {
+    margin: 0;
+    font-family: 'Cormorant Garamond', serif;
+}
+header, footer {
+    background-color: #edbb7d;
+    padding: 3px;
+    text-align: center;
+
+}
+
 .container {
     max-width: 1200px;
-    margin: 0 auto;
-    font-family: 'Cormorant Garamond', serif;
+    margin: 0 auto; 
 }
 img {
     display: block;
     max-width: 100%;
     height: auto;
 }
-h1 {
+.container h1 {
     text-align: center;
     font-size: 1.8em;
 }
@@ -22,6 +32,18 @@ h4 {
     margin-top: 5px;
     margin-left: 27px;
 }
+.choose-option {
+    display: flex;
+    margin-top: 20px;
+}
+label {
+    font-size: 1.2em;
+}
+select {
+    padding: 5px 10px;
+    margin-left: 10px;
+}
+
 .list {
     display: grid;
     grid-template-columns: repeat(5, 20%);
@@ -57,4 +79,15 @@ h4 {
 }
 .title-item h3 {
     margin-left: 5px;
+}
+
+.fa-amazon {
+    line-height: 22px;
+}
+
+footer {
+    margin-top: 20px;
+}
+footer a {
+    color: black;
 }
